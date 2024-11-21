@@ -1,0 +1,4 @@
+html2text
+langchain
+pyyaml
+munch

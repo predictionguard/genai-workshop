@@ -1,0 +1,8 @@
+fastapi[all]
+uvicorn
+lancedb
+langchain
+pyarrow
+predictionguard
+pandas
+torch

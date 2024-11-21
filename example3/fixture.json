@@ -1,0 +1,6 @@
+{
+    "What is a prompt injection?": "This manipulates a large language model (LLM) through crafty inputs, causing unintended actions by the LLM. Direct injections overwrite system prompts, while indirect ones manipulate inputs from external sources.",
+    "What is insecure output handling?": "a vulnerability that arises when a downstream component blindly accepts large language model (LLM) output without proper scrutiny, such as passing LLM output directly to backend, privileged, or client-side functions",
+    "Insecure\n\nOutput Handlin\nis:": "a vulnerability that arises when a downstream component blindly accepts large language model (LLM) output without proper scrutiny, such as passing LLM output directly to backend, privileged, or client-side functions",
+    "What can result from insecure output handling?": "XSS and CSRF in web browsers as well as SSRF, privilege escalation, or remote code execution on backend systems"
+}
