@@ -13,7 +13,7 @@ $ pip install -r requirements.txt
 Run the API:
 
 ```
-$ streamlit run app.py
+$ PREDICTIONGUARD_API_KEY=<your api key> streamlit run app.py
 ```
 
 ## Running via Docker
