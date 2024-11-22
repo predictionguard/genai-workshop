@@ -13,7 +13,7 @@ $ pip install -r requirements.txt
 Run the API:
 
 ```
-$ RAG_API_URL=<the url to your backend> RAG_API_TABLE=<the table name where your docs are loaded> streamlit run chat.py
+$ PREDICTIONGUARD_API_KEY=<your api key> streamlit run app.py
 ```
 
 ## Running via Docker
