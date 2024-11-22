@@ -1,8 +1,8 @@
-# Generative AI Engineering - Composable Building Blocks, Example Applications, and Guides
+# AI workshops
 
 This repo includes the materials for GenAI workshops. The materials were prepared by Daniel Whitenack for live attendees. However, others might benefit from them as they build generative AI applications.
 
-## GenAI Building Blocks Workshop
+## Generative AI Engineering - Composable Building Blocks, Example Applications, and Guides
 
 1. [example1](genai-building-blocks/example1) - Basic LLM Chatbot
 2. [example2](genai-building-blocks/example2) - Naive RAG
@@ -11,7 +11,7 @@ This repo includes the materials for GenAI workshops. The materials were prepare
 5. [example5](genai-building-blocks/example5) - Text-to-SQL/ Tool calling
 6. [example6](genai-building-blocks/example6) - Safeguarding LLM Applications
 
-## AI Engineering Workshop
+## GenAI Development - From Zero to AI Engineer
 
 1. [example1](ai-engineering/example1.ipynb) - Accessing LLMs
 2. [example2](ai-engineering/example2.ipynb) - Prompt formats
