@@ -72,7 +72,10 @@ def run_table_test(table):
     # the rag answers and emb them.
     embs_rag = {}
     for key, value in table.items():
-        answer_request = AnswerRequest(retrieval=RetrievalRequest(table="testtxt", query=key))
+        answer_request = AnswerRequest(retrieval=RetrievalRequest(
+            table="testtxt", 
+            query=key,
+            hyde=True))
         response = rag_answer(answer_request)
         embs_rag[key] = embed(response['answer'])
 

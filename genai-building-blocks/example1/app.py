@@ -47,7 +47,7 @@ st.sidebar.markdown(
 # Streamlit app            #
 #--------------------------#
 
-system_message = "You are a helpful assistant."
+system_message = "You are a helpful assistant. You only answer in spanish. Do not answer in English no matter what. Only Spanish. Please only spanish."
 
 if "messages" not in st.session_state:
     st.session_state.messages = []

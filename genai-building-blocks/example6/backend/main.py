@@ -9,8 +9,14 @@ from langchain.prompts import PromptTemplate
 import pyarrow as pa
 from predictionguard import PredictionGuard
 
+# FYI - comment this out to disable rerank
+from lancedb.rerankers import CrossEncoderReranker
+
 client = PredictionGuard()
 app = FastAPI()
+
+# FYI - Comment this out to disable rerank
+reranker = CrossEncoderReranker()
 
 
 #--------------------------#
@@ -101,7 +107,7 @@ def batch_embed(batch):
     return embeddings
 
     
-def validate_docs(docs):
+def validate_docs(docs, user_chunk_size):
     """
     Validate the provided docs and user_chunk_size.
 
@@ -117,6 +123,8 @@ def validate_docs(docs):
     for d in docs:
         if len(d.doc) > maximum_chunk_size:
             return False
+    if user_chunk_size > maximum_chunk_size:
+       return False
     return True
 
     
@@ -148,10 +156,25 @@ def add_docs(upload_docs_request):
     return docs_load
 
 
+hyde_system = "Given a question, generate a concise paragraph of text that answers the question."
+
+hyde_template = """Question: "{query}"
+
+Conscise paragraph: """
+
+hyde_prompt = PromptTemplate(
+    input_variables=["query"],
+    template=hyde_template
+)
+
+
 class RetrievalRequest(BaseModel):
     table: str
     query: str
+    hyde: Optional[bool] = False
     chunk_count: Optional[int] = 1
+    hybrid: Optional[bool] = False
+    rerank: Optional[bool] = False
 
 
 def search(retrieval_request):
@@ -167,13 +190,45 @@ def search(retrieval_request):
         list: A list of dictionaries containing the search results.
     """
 
-    query_doc = retrieval_request.query
+    # Process the query and perform HYDE if requested.
+    if retrieval_request.hyde:
+        hyde_prompt_filled = hyde_prompt.format(query=retrieval_request.query)
+        hyde_result = client.chat.completions.create(
+            model="Hermes-3-Llama-3.1-8B",
+            messages=[
+                {"role": "system", "content": hyde_system},
+                {"role": "user", "content": hyde_prompt_filled}
+            ],
+            max_tokens=500,
+            temperature=0.1
+        )
+        query_doc = hyde_result["choices"][0]["message"]["content"]
+    else:
+        query_doc = retrieval_request.query
 
     # Open the table.
     table = db.open_table(retrieval_request.table)
 
     # Search the table.
-    results = table.search(embed(query_doc)).limit(retrieval_request.chunk_count).to_pandas()
+    if retrieval_request.hybrid and retrieval_request.rerank:
+
+        # FYI - uncomment this line and comment the following line to disable rerank
+        #results = table.search(query_type="hybrid").vector(embed(query_doc)).text(query_doc).limit(retrieval_request.chunk_count).to_pandas()
+        results = table.search(query_type="hybrid").vector(embed(query_doc)).text(query_doc).rerank(reranker=reranker).limit(retrieval_request.chunk_count).to_pandas()
+        results['_distance'] = results['_relevance_score'].apply(lambda x: 1-x)
+    
+    elif retrieval_request.hybrid:
+        results = table.search(query_type="hybrid").vector(embed(query_doc)).text(query_doc).limit(retrieval_request.chunk_count).to_pandas()
+        results['_distance'] = results['_relevance_score'].apply(lambda x: 1-x)
+    
+    elif retrieval_request.rerank:
+        
+        # FYI - uncomment this line and comment the following line to disable rerank
+        #results = table.search(embed(query_doc)).limit(maximum_chunk_count).to_pandas()
+        results = table.search(query_doc).rerank(reranker=reranker).limit(retrieval_request.chunk_count).to_pandas()
+        results['_distance'] = results['_relevance_score'].apply(lambda x: 1-x)
+    else:    
+        results = table.search(embed(query_doc)).limit(retrieval_request.chunk_count).to_pandas()
     
     # Clearn up the results.
     results.drop(columns=['vector'], inplace=True)
@@ -285,7 +340,8 @@ async def upload_docs(upload_docs_request: UploadDocsRequest):
 
     # Validate the docs for upload.
     valid = validate_docs(
-       upload_docs_request.docs
+       upload_docs_request.docs,
+       upload_docs_request.chunk_size
     )
     if not valid:
        raise HTTPException(status_code=400, detail=INVALID_DOCS_ERROR)
@@ -434,7 +490,7 @@ async def answer_generation(answer_request: AnswerRequest, factuality: bool = Fa
     # Get the factuality.
     if factuality:
        fact_score = client.factuality.check(
-            reference=return_info['injected_doc'],
+            reference=return_info['injected_context'],
             text=return_info['answer']
         )
        return_info["factuality"] = fact_score['checks'][0]['score']

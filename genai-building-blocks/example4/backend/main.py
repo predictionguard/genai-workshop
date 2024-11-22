@@ -203,6 +203,7 @@ def search(retrieval_request):
             temperature=0.1
         )
         query_doc = hyde_result["choices"][0]["message"]["content"]
+        print("HYDE doc:",query_doc)
     else:
         query_doc = retrieval_request.query
 
