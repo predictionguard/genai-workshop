@@ -2,7 +2,7 @@
 
 This repo includes the materials for GenAI workshops. The materials were prepared by Daniel Whitenack for live attendees. However, others might benefit from them as they build generative AI applications.
 
-## Generative AI Engineering - Composable Building Blocks, Example Applications, and Guides
+## GenAI Engineering - Composable Building Blocks
 
 1. [example1](genai-building-blocks/example1) - Basic LLM Chatbot
 2. [example2](genai-building-blocks/example2) - Naive RAG
