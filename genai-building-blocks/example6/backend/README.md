@@ -48,7 +48,6 @@ $ curl --location '<api url>/docs' \
 --header 'Content-Type: application/json' \
 --data '{
     "table": "wiki",
-    "chunk_size": 300,
     "docs": [
         {
             "doc": "Linux (/ˈlɪnʊks/ LIN-uuks)[11] is a family of open-source Unix-like operating systems based on the Linux kernel,[12] an operating system kernel first released on September 17, 1991, by Linus Torvalds.[13][14][15] Linux is typically packaged as a Linux distribution (distro), which includes the kernel and supporting system software and libraries, many of which are provided by the GNU Project.",
