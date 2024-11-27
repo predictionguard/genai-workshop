@@ -107,7 +107,7 @@ def batch_embed(batch):
     return embeddings
 
     
-def validate_docs(docs, user_chunk_size):
+def validate_docs(docs):
     """
     Validate the provided docs and user_chunk_size.
 
@@ -123,8 +123,6 @@ def validate_docs(docs, user_chunk_size):
     for d in docs:
         if len(d.doc) > maximum_chunk_size:
             return False
-    if user_chunk_size > maximum_chunk_size:
-       return False
     return True
 
     
@@ -340,10 +338,7 @@ async def upload_docs(upload_docs_request: UploadDocsRequest):
     """
 
     # Validate the docs for upload.
-    valid = validate_docs(
-       upload_docs_request.docs,
-       upload_docs_request.chunk_size
-    )
+    valid = validate_docs(upload_docs_request.docs)
     if not valid:
        raise HTTPException(status_code=400, detail=INVALID_DOCS_ERROR)
 
