@@ -72,8 +72,18 @@ Step 2: Query
 curl --location '<api url>/answers' \
 --header 'Content-Type: application/json' \
 --data '{
+  "retrieval": {
+    "table": "wiki",
     "query": "Who was Martin Luther?",
-    "table": "wiki"
+    "hyde": false,
+    "chunk_count": 1,
+    "hybrid": false,
+    "rerank": false
+  },
+  "llm": {
+    "max_tokens": 500,
+    "temperature": 0.1
+  }
 }'
 ```
 
@@ -81,9 +91,16 @@ This returns:
 
 ```
 {
-    "answer": "Martin Luther was a German priest, theologian, author, hymnwriter, professor, and Augustinian friar who played a significant role in the Protestant Reformation and is considered the founder of Lutheranism.",
-    "injected_doc": "Martin Luther OSA (/ˈluːθər/;[1] German: [ˈmaʁtiːn ˈlʊtɐ] ⓘ; 10 November 1483[2]– 18 February 1546) was a German priest, theologian, author, hymnwriter, professor, and Augustinian friar.[3] He was the seminal figure of the Protestant Reformation, and his theological beliefs form the basis of Lutheranism. ",
-    "injected_doc_id": "79f76376-44d0-4aa4-adda-cd0bed450145",
-    "_distance": 0.7518587112426758
+    "answer": "Martin Luther was a German priest, theologian, author, hymnwriter, professor, and Augustinian friar. He was the seminal figure of the Protestant Reformation, and his theological beliefs form the basis of Lutheranism.",
+    "injected_context": "Martin Luther OSA (/ˈluːθər/;[1] German: [ˈmaʁtiːn ˈlʊtɐ] ⓘ; 10 November 1483[2]– 18 February 1546) was a German priest, theologian, author, hymnwriter, professor, and Augustinian friar.[3] He was the seminal figure of the Protestant Reformation, and his theological beliefs form the basis of Lutheranism. ",
+    "injected_doc_ids": [
+        "8b31642b-4013-47fc-bf27-4dccc07a4531"
+    ],
+    "distances": [
+        0.2109432816505432
+    ],
+    "metadata": [
+        "luther wiki"
+    ]
 }
 ```
