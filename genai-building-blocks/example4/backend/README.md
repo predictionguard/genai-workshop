@@ -28,7 +28,7 @@ $ PREDICTIONGUARD_TOKEN=<your PG access token> python main.py
 Build the docker image:
 
 ```
-$ docker build -t ragapi
+$ docker build -t ragapi .
 ```
 
 Run the docker image:
