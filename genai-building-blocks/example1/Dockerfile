@@ -8,4 +8,4 @@ RUN pip install -r requirements.txt
 
 COPY chat.py ./
 
-CMD ["streamlit", "run", "chat.py"]
+CMD ["streamlit", "run", "app.py"]
